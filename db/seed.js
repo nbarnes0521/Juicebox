@@ -1,11 +1,14 @@
-const { client } = require('./index');
+const {
+    client,
+    getAllUsers // new
+  } = require('./index');
 
-async function testDB() {
+  async function testDB() {
     try {
       client.connect();
   
-      const { rows } = await client.query(`SELECT * FROM users;`);
-      console.log(rows);
+      const users = await getAllUsers();
+      console.log(users);
     } catch (error) {
       console.error(error);
     } finally {
@@ -14,5 +17,3 @@ async function testDB() {
   }
   
   testDB();
-
-  
