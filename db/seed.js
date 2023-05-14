@@ -12,7 +12,9 @@ const {
   
       const albert = await createUser({ username: 'albert', password: 'bertie99' });
 
-      const albertTwo = await createUser({ username: 'albert', password: 'imposter_albert' });
+      const sandra = await createUser({ username: 'sandra', password: 'sandra123' });
+
+      const glamgal = await createUser({ username: 'glamgal', password: 'glamgal123' });
   
       console.log(albert);
   
