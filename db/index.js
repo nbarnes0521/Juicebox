@@ -13,3 +13,10 @@ async function getAllUsers() {
   
     return rows;
   }
+
+  module.exports = {
+    client,
+    getAllUsers
+  };
+
+  // npm run seed:dev (To run)
