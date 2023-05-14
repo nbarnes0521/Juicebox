@@ -4,26 +4,6 @@ const {
     createUser
   } = require('./index');
 
-  async function createInitialUsers() {
-
-    try {
-        
-      console.log("Starting to create users...");
-  
-      const albert = await createUser({ username: 'albert', password: 'bertie99' });
-
-      const sandra = await createUser({ username: 'sandra', password: 'sandra123' });
-
-      const glamgal = await createUser({ username: 'glamgal', password: 'glamgal123' });
-  
-      console.log(albert);
-  
-      console.log("Finished creating users!");
-    } catch(error) {
-      console.error("Error creating users!");
-      throw error;
-    }
-  }
 
 async function dropTables() {
     try {
@@ -55,6 +35,27 @@ async function dropTables() {
       console.log("Finished building tables!");
     } catch (error) {
       console.error("Error building tables!");
+      throw error;
+    }
+  }
+
+  async function createInitialUsers() {
+
+    try {
+        
+      console.log("Starting to create users...");
+  
+      const albert = await createUser({ username: 'albert', password: 'bertie99' });
+
+      const sandra = await createUser({ username: 'sandra', password: 'sandra123' });
+
+      const glamgal = await createUser({ username: 'glamgal', password: 'glamgal123' });
+  
+      console.log(albert);
+  
+      console.log("Finished creating users!");
+    } catch(error) {
+      console.error("Error creating users!");
       throw error;
     }
   }
