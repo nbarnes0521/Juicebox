@@ -128,30 +128,34 @@ async function createInitialPosts() {
 }
 
 async function createTags(tagList) {
-  if (tagList.length === 0) { 
-    return; 
+  if (tagList.length === 0) {
+    return;
   }
 
-  // need something like: $1), ($2), ($3 
-  const insertValues = tagList.map(
-    (_, index) => `$${index + 1}`).join('), (');
-  // then we can use: (${ insertValues }) in our string template
-
-  // need something like $1, $2, $3
-  const selectValues = tagList.map(
-    (_, index) => `$${index + 1}`).join(', ');
-  // then we can use (${ selectValues }) in our string template
+  const insertValues = tagList.map((_, index) => `($${index + 1})`).join(', ');
 
   try {
-    // insert the tags, doing nothing on conflict
-    // returning nothing, we'll query after
+    await client.query(
+      `INSERT INTO tags(name)
+       VALUES ${insertValues}
+       ON CONFLICT (name) DO NOTHING`,
+      tagList
+    );
 
-    // select all tags where the name is in our taglist
-    // return the rows from the query
+    const { rows } = await client.query(
+      `SELECT * FROM tags
+       WHERE name IN (${tagList.map((_, index) => `$${index + 1}`).join(', ')})`,
+      tagList
+    );
+
+    return rows;
   } catch (error) {
     throw error;
   }
 }
+
+
+
 
 async function rebuildDB() {
   try {
@@ -197,7 +201,7 @@ async function testDB() {
     const albert = await getUserById(1);
     console.log("Result:", albert);
 
-    console.log("Finished database tests!");
+    console.log("Finished database tests! End of CODE");
   } catch (error) {
     console.log("Error during testDB");
     throw error;
@@ -209,3 +213,6 @@ rebuildDB()
   .then(testDB)
   .catch(console.error)
   .finally(() => client.end());
+
+
+// To Revert back to last commit: git reset --hard HEAD
