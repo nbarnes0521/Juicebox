@@ -134,11 +134,45 @@ async function updatePost(id, fields = {}) {
 async function getAllPosts() {
   try {
     const { rows } = await client.query(`
-      SELECT *
-      FROM posts;
+      SELECT posts.id, posts.title, posts.content, posts.active, users.id as author_id, users.username, users.name, users.location, tags.id as tag_id, tags.name as tag_name
+      FROM posts
+      JOIN users ON posts."authorId" = users.id
+      LEFT JOIN post_tags ON posts.id = post_tags."postId"
+      LEFT JOIN tags ON post_tags."tagId" = tags.id;
     `);
 
-    return rows;
+    const posts = [];
+    const postIds = new Set();
+
+    rows.forEach((row) => {
+      const postId = row.id;
+      if (!postIds.has(postId)) {
+        posts.push({
+          id: postId,
+          title: row.title,
+          content: row.content,
+          active: row.active,
+          tags: [],
+          author: {
+            id: row.author_id,
+            username: row.username,
+            name: row.name,
+            location: row.location,
+          },
+        });
+        postIds.add(postId);
+      }
+
+      const currentPost = posts.find((post) => post.id === postId);
+      if (row.tag_id) {
+        currentPost.tags.push({
+          id: row.tag_id,
+          name: row.tag_name,
+        });
+      }
+    });
+
+    return posts;
   } catch (error) {
     throw error;
   }
@@ -147,16 +181,52 @@ async function getAllPosts() {
 async function getPostsByUser(userId) {
   try {
     const { rows } = await client.query(`
-      SELECT * 
+      SELECT posts.id, posts.title, posts.content, posts.active, users.id as author_id, users.username, users.name, users.location, tags.id as tag_id, tags.name as tag_name
       FROM posts
-      WHERE "authorId"=${ userId };
+      JOIN users ON posts."authorId" = users.id
+      LEFT JOIN post_tags ON posts.id = post_tags."postId"
+      LEFT JOIN tags ON post_tags."tagId" = tags.id
+      WHERE posts."authorId" = ${userId};
     `);
 
-    return rows;
+    const posts = [];
+    const postIds = new Set();
+
+    rows.forEach((row) => {
+      const postId = row.id;
+      if (!postIds.has(postId)) {
+        posts.push({
+          id: postId,
+          title: row.title,
+          content: row.content,
+          active: row.active,
+          tags: [],
+          author: {
+            id: row.author_id,
+            username: row.username,
+            name: row.name,
+            location: row.location,
+          },
+        });
+        postIds.add(postId);
+      }
+
+      const currentPost = posts.find((post) => post.id === postId);
+      if (row.tag_id) {
+        currentPost.tags.push({
+          id: row.tag_id,
+          name: row.tag_name,
+        });
+      }
+    });
+
+    return posts;
   } catch (error) {
     throw error;
   }
 }
+
+
 
 module.exports = {  
   client,
