@@ -120,12 +120,14 @@ async function createInitialPosts() {
       title: "Living the Glam Life",
       content: "Do you even? I swear that half of you are posing."
     });
+
     console.log("Finished creating posts!");
   } catch (error) {
     console.log("Error creating posts!");
     throw error;
   }
 }
+
 
 async function createTags(tagList) {
   if (tagList.length === 0) {
@@ -239,7 +241,7 @@ async function createInitialTags() {
 }
 
 
-
+// REBUILD !!! /////
 
 async function rebuildDB() {
   try {
@@ -249,12 +251,12 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialPosts();
-    await createInitialTags();
   } catch (error) {
-    console.log("Error during rebuildDB");
+    console.log("Error during rebuildDB")
     throw error;
   }
 }
+
 
 
 async function testDB() {

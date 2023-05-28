@@ -88,13 +88,13 @@ async function getUserById(userId) {
  * POST Methods
  */
 
-async function createPost({
+ async function createPost({
   authorId,
   title,
   content
 }) {
   try {
-    const { rows: [ post ] } = await client.query(`
+    const { rows: [post] } = await client.query(`
       INSERT INTO posts("authorId", title, content) 
       VALUES($1, $2, $3)
       RETURNING *;
@@ -105,6 +105,7 @@ async function createPost({
     throw error;
   }
 }
+
 
 async function updatePost(id, fields = {}) {
   // build the set string
